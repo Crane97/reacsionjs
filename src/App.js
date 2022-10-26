@@ -1,24 +1,37 @@
 import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
 
 function App() {
+
+  const[peopleList, setPeopleList] = useState([]);
+
+  function fetchPeopleHandler(){
+    fetch('https://swapi.dev/api/people/')
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        const transformedPeople = data.results.map(peopleData => {
+          return{
+            name:peopleData.name,
+            mass:peopleData.mass,
+            height:peopleData.height
+          }
+        });
+        setPeopleList(transformedPeople);
+      });
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <html>
+      <section>
+          <button onClick={fetchPeopleHandler()}>Fetch people</button>
+      </section>
+      <section>
+          <PeopleList people = {peopleList} />
+      </section>
+      </html>
   );
 }
 
